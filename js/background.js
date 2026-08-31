@@ -83,6 +83,8 @@ class DynamicBackground {
 
     renderRealm(realm, bgImage, alphaValue) {
         push();
+        rectMode(CORNER);
+        imageMode(CORNER);
         let w = width;
         let h = height;
         let rId = realm.id || realm;
@@ -97,11 +99,10 @@ class DynamicBackground {
             }
             
             tint(255, alphaValue);
-            imageMode(CORNER);
             image(bgImage, -(imgW - w) / 2, 0, imgW, imgH); // Center it horizontally if wider
             noTint();
             
-            // Semi-transparent black curtain to make platforms pop
+            // Semi-transparent black curtain to make platforms pop across entire screen
             noStroke();
             fill(0, 0, 0, (170 * alphaValue) / 255);
             rect(0, 0, w, h);

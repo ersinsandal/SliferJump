@@ -62,8 +62,8 @@ class Particle {
         if (this.shape === 'circle') {
             ellipse(this.x, this.y, this.size);
         } else if (this.shape === 'square') {
-            rectMode(CENTER);
-            rect(this.x, this.y, this.size, this.size);
+            let half = this.size * 0.5;
+            rect(this.x - half, this.y - half, this.size, this.size);
         } else if (this.shape === 'spark') {
             push();
             translate(this.x, this.y);
