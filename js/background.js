@@ -3,26 +3,30 @@ class DynamicBackground {
         this.currentRealm = null;
         this.transitionProgress = 0;
         this.scrollOffset = 0;
+        this.isMobile = (typeof isMobileDevice !== 'undefined') ? isMobileDevice : false;
         
-        // Element arrays
+        // Element arrays (optimized counts for desktop/mobile)
+        let starCount = this.isMobile ? 30 : 60;
         this.stars = [];
-        for (let i = 0; i < 100; i++) {
-            this.stars.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), alphaPhase: random(TWO_PI), size: random(1, 3) });
+        for (let i = 0; i < starCount; i++) {
+            this.stars.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), alphaPhase: random(TWO_PI), size: random(1, 2.5) });
         }
         
+        let cloudCount = this.isMobile ? 5 : 8;
         this.clouds = [];
-        for (let i = 0; i < 10; i++) {
-            this.clouds.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), speed: random(0.5, 1.5), size: random(50, 150) });
+        for (let i = 0; i < cloudCount; i++) {
+            this.clouds.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), speed: random(0.5, 1.2), size: random(50, 120) });
         }
         
         this.buildings = [];
-        for (let i = 0; i < 20; i++) {
-            this.buildings.push({ x: i * 30, w: random(20, 50), h: random(100, 300) });
+        for (let i = 0; i < 15; i++) {
+            this.buildings.push({ x: i * 35, w: random(20, 45), h: random(100, 250) });
         }
         
+        let particleCount = this.isMobile ? 15 : 35;
         this.particles = [];
-        for (let i = 0; i < 50; i++) {
-            this.particles.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), speedY: random(0.5, 2), phase: random(TWO_PI) });
+        for (let i = 0; i < particleCount; i++) {
+            this.particles.push({ x: random(windowWidth || 500), y: random(windowHeight || 800), speedY: random(0.5, 1.8), phase: random(TWO_PI) });
         }
     }
 
@@ -42,11 +46,12 @@ class DynamicBackground {
         }
 
         // Update elements
-        for (let star of this.stars) {
-            star.alphaPhase += 0.05;
+        for (let i = 0; i < this.stars.length; i++) {
+            this.stars[i].alphaPhase += 0.05;
         }
         
-        for (let cloud of this.clouds) {
+        for (let i = 0; i < this.clouds.length; i++) {
+            let cloud = this.clouds[i];
             cloud.x -= cloud.speed;
             if (cloud.x + cloud.size < 0) {
                 cloud.x = width + cloud.size;
@@ -54,7 +59,8 @@ class DynamicBackground {
             }
         }
         
-        for (let p of this.particles) {
+        for (let i = 0; i < this.particles.length; i++) {
+            let p = this.particles[i];
             p.y -= p.speedY;
             p.x += sin(p.phase) * 0.5;
             p.phase += 0.02;
@@ -113,7 +119,8 @@ class DynamicBackground {
         if (theme === 2) {
             // Stars
             noStroke();
-            for (let s of this.stars) {
+            for (let i = 0; i < this.stars.length; i++) {
+                let s = this.stars[i];
                 let a = map(sin(s.alphaPhase), -1, 1, 50, 255);
                 fill(255, (a * alphaValue) / 255);
                 ellipse(s.x, s.y, s.size);
@@ -127,38 +134,39 @@ class DynamicBackground {
             push();
             translate(w/2, h/2);
             rotate(frameCount * 0.01);
-            for(let i=0; i<5; i++){
-                fill(128, 0, 128, (30 * alphaValue) / 255);
-                ellipse(0, 0, 300 - i*50);
+            for(let i=0; i<4; i++){
+                fill(128, 0, 128, (28 * alphaValue) / 255);
+                ellipse(0, 0, 280 - i*60);
             }
             pop();
-            fill(138, 43, 226, (150 * alphaValue) / 255);
-            for (let p of this.particles) {
-                ellipse(p.x, p.y, 8, 8);
+            fill(138, 43, 226, (140 * alphaValue) / 255);
+            for (let i = 0; i < this.particles.length; i++) {
+                ellipse(this.particles[i].x, this.particles[i].y, 7, 7);
             }
         } else if (theme === 4) {
             // Orichalcos Energy lines
-            stroke(0, 200, 50, (100 * alphaValue) / 255);
+            stroke(0, 200, 50, (90 * alphaValue) / 255);
             strokeWeight(1);
-            for(let i=0; i<10; i++){
-                let y = (frameCount * 2 + i * 50) % h;
+            let numLines = this.isMobile ? 5 : 8;
+            for(let i=0; i<numLines; i++){
+                let y = (frameCount * 2 + i * 65) % h;
                 line(0, y, w, y);
             }
             noStroke();
-            fill(50, 255, 100, (150 * alphaValue) / 255);
-            for (let p of this.particles) {
-                rect(p.x, p.y, 4, 4);
+            fill(50, 255, 100, (140 * alphaValue) / 255);
+            for (let i = 0; i < this.particles.length; i++) {
+                rect(this.particles[i].x, this.particles[i].y, 4, 4);
             }
         } else if (theme === 0) {
             // Divine / Boss Theme - Light beams & Golden Sparkles
             noStroke();
-            fill(255, 215, 0, (40 * alphaValue) / 255);
+            fill(255, 215, 0, (35 * alphaValue) / 255);
             triangle(w*0.3, 0, w*0.7, 0, w*0.5, h);
             triangle(w*0.1, 0, w*0.4, 0, w*0.2, h);
             triangle(w*0.6, 0, w*0.9, 0, w*0.8, h);
-            fill(255, 215, 0, (200 * alphaValue) / 255);
-            for (let p of this.particles) {
-                ellipse(p.x, p.y, 5);
+            fill(255, 215, 0, (180 * alphaValue) / 255);
+            for (let i = 0; i < this.particles.length; i++) {
+                ellipse(this.particles[i].x, this.particles[i].y, 5);
             }
         }
         pop();

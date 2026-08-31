@@ -32,8 +32,9 @@ class Meteor {
             this.angle += 0.05;
             this.trail.push({x: this.x, y: this.y, life: 255});
             
-            if (this.trail.length > 20) this.trail.shift();
-            for (let t of this.trail) t.life -= 15;
+            let maxTrail = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? 8 : 15;
+            if (this.trail.length > maxTrail) this.trail.shift();
+            for (let i = 0; i < this.trail.length; i++) this.trail[i].life -= 18;
             
             if (this.y >= this.targetY) {
                 this.exploded = true;
@@ -68,10 +69,12 @@ class Meteor {
             
             // Trail
             noStroke();
-            for (let i = 0; i < this.trail.length; i++) {
+            let tLen = this.trail.length;
+            for (let i = 0; i < tLen; i++) {
                 let t = this.trail[i];
-                let size = map(i, 0, this.trail.length, 5, this.radius * 2);
-                fill(255, map(i, 0, this.trail.length, 0, 150), 0, max(0, t.life));
+                let progress = i / (tLen || 1);
+                let size = 5 + progress * (this.radius * 1.5);
+                fill(255, progress * 150, 0, Math.max(0, t.life));
                 ellipse(t.x, t.y, size);
             }
             

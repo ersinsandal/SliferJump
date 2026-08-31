@@ -66,22 +66,36 @@ let gameStartTime = 0;
 // ═══════════════════════════════════════════
 
 /**
- * Preload — load static resources
+ * Ensures background for a specific level is loaded and cached
+ */
+function ensureLevelBackgroundLoaded(levelId) {
+    if (!levelId || levelId < 1 || levelId > 25) return;
+    if (!loadedBgImages[levelId]) {
+        loadedBgImages[levelId] = loadImage(`assets/img/bg_level_${levelId}.png`, () => {}, () => {
+            loadedBgImages[levelId] = loadImage(`assets/img/bg_realm_${Math.ceil(levelId/5)}.jpg`);
+        });
+    }
+    // Preload next level as well
+    let nextId = levelId + 1;
+    if (nextId <= 25 && !loadedBgImages[nextId]) {
+        loadedBgImages[nextId] = loadImage(`assets/img/bg_level_${nextId}.png`, () => {}, () => {
+            loadedBgImages[nextId] = loadImage(`assets/img/bg_realm_${Math.ceil(nextId/5)}.jpg`);
+        });
+    }
+}
+
+/**
+ * Preload — load essential static resources for instant startup
  */
 function preload() {
     const basePath = ".";
     
-    // Load backgrounds
-    for (let i = 1; i <= 25; i++) {
-        loadedBgImages[i] = loadImage(`assets/img/bg_level_${i}.png`, 
-            () => {}, 
-            () => {
-                // Fallback if not found
-                loadedBgImages[i] = loadImage(`assets/img/bg_realm_${Math.ceil(i/5)}.jpg`);
-            }
-        );
-    }
+    // Load level 1 immediately so initial game start is instantaneous (<0.5s)
+    loadedBgImages[1] = loadImage(basePath + "/assets/img/bg_level_1.png", () => {}, () => {
+        loadedBgImages[1] = loadImage(basePath + "/assets/img/bg_realm_1.jpg");
+    });
 
+    // Core entity sprites
     Slifer.leftImage = loadImage(basePath + "/assets/img/slifer_left.png");
     Slifer.rightImage = loadImage(basePath + "/assets/img/slifer_right.png");
     Platform.springImage = loadImage(basePath + "/assets/img/spring.png");
@@ -92,19 +106,26 @@ function preload() {
     sound.break = loadSound(basePath + "/assets/sound/break.mp3");
     sound.roar = loadSound(basePath + "/assets/sound/roar.mp3");
     sound.lava = loadSound(basePath + "/assets/sound/lava.mp3");
-    sound.background = loadSound(basePath + "/assets/sound/background.mp3");
-    
     sound.blackhole = loadSound(basePath + "/assets/sound/blackhole.mp3");
     sound.jump = loadSound(basePath + "/assets/sound/jump.wav");
     sound.spring = loadSound(basePath + "/assets/sound/spring.mp3");
     sound.fragile = loadSound(basePath + "/assets/sound/fragile.mp3");
     sound.falling = loadSound(basePath + "/assets/sound/falling.mp3");
+
+    // Asynchronously load heavy background music without stalling setup
+    sound.background = loadSound(basePath + "/assets/sound/background.mp3", (s) => {
+        if (s && typeof s.setLoop === 'function') s.setLoop(true);
+    });
 }
 
 /**
  * Setup — initialization
  */
 function setup() {
+    // 1. Force 1:1 pixel density to eliminate high-DPI (2x-4x Retina) fill rate bottleneck on mobile
+    if (typeof pixelDensity === 'function') {
+        pixelDensity(1);
+    }
     frameRate(config.FPS);
     
     // Create canvas
@@ -137,16 +158,23 @@ function setup() {
 
     // Start in menu state
     gameState = GAME_STATE.MENU;
-    if (sound.background) sound.background.setLoop(true);
+    if (sound.background && typeof sound.background.setLoop === 'function') sound.background.setLoop(true);
     setTimeout(() => { if (gameState === GAME_STATE.MENU) SoundManager.playMenuMusic(); }, 1000);
+
+    // Asynchronously queue subsequent level background loads without network congestion
+    setTimeout(() => {
+        let id = 2;
+        let loaderTimer = setInterval(() => {
+            if (id > 25) { clearInterval(loaderTimer); return; }
+            ensureLevelBackgroundLoaded(id);
+            id++;
+        }, 150);
+    }, 1500);
 }
 
 /**
  * Main draw loop
  */
-let physicsAccumulator = 0;
-const PHYSICS_STEP = 1000 / 60;
-
 function executeGameState() {
     switch (gameState) {
         case GAME_STATE.MENU:
@@ -169,18 +197,7 @@ function executeGameState() {
 }
 
 function draw() {
-    let dt = deltaTime;
-    if (dt > 100) dt = 100; // Cap to prevent death spiral
-    
-    physicsAccumulator += dt;
-    let steps = Math.floor(physicsAccumulator / PHYSICS_STEP);
-    
-    if (steps > 0) {
-        physicsAccumulator -= steps * PHYSICS_STEP;
-        for (let i = 0; i < steps; i++) {
-            executeGameState();
-        }
-    }
+    executeGameState();
 }
 
 // ═══════════════════════════════════════════
@@ -655,9 +672,9 @@ function updateAndDrawGame() {
 
         push();
         // ── Helper to draw a glowing fiery triangle cone from mouth to target ──
-        const drawFlameCone = (wStart, wEnd, fillColor, strokeColor, strkWeight) => {
-            if (fillColor) fill(fillColor); else noFill();
-            if (strokeColor) { stroke(strokeColor); strokeWeight(strkWeight || 1); } else noStroke();
+        const drawFlameCone = (wStart, wEnd, fillR, fillG, fillB, fillA, strkR, strkG, strkB, strkA, strkWeight) => {
+            if (fillA > 0) fill(fillR, fillG, fillB, fillA); else noFill();
+            if (strkA > 0) { stroke(strkR, strkG, strkB, strkA); strokeWeight(strkWeight || 1); } else noStroke();
             
             beginShape();
             vertex(mouthX - nx * wStart, mouthY - ny * wStart);
@@ -668,34 +685,35 @@ function updateAndDrawGame() {
         };
 
         // 1. Giant Outer Crimson-Red Flame Aura (Completely covers scoreboard width)
-        drawFlameCone(25 * intensity, 230 * intensity, color(255, 30, 0, 75 * intensity), color(255, 60, 0, 120 * intensity), 3);
+        drawFlameCone(25 * intensity, 230 * intensity, 255, 30, 0, 75 * intensity, 255, 60, 0, 120 * intensity, 3);
 
         // 2. Main Blazing Fiery Orange Torrent
-        drawFlameCone(16 * intensity, 160 * intensity, color(255, 110, 0, 160 * intensity), color(255, 150, 0, 220 * intensity), 3);
+        drawFlameCone(16 * intensity, 160 * intensity, 255, 110, 0, 160 * intensity, 255, 150, 0, 220 * intensity, 3);
 
         // 3. Bright Golden-Amber Flame Body
-        drawFlameCone(10 * intensity, 100 * intensity, color(255, 190, 20, 210 * intensity), color(255, 220, 70, 245 * intensity), 2.5);
+        drawFlameCone(10 * intensity, 100 * intensity, 255, 190, 20, 210 * intensity, 255, 220, 70, 245 * intensity, 2.5);
 
         // 4. White-Hot Intense Yellow Flame Core
-        drawFlameCone(4 * intensity, 45 * intensity, color(255, 255, 220, 250 * intensity), color(255, 255, 255, 255 * intensity), 2);
+        drawFlameCone(4 * intensity, 45 * intensity, 255, 255, 220, 250 * intensity, 255, 255, 255, 255 * intensity, 2);
 
-        // 5. Six Turbulent Wavy Flame Ribbons rushing into the scoreboard
+        // 5. Turbulent Wavy Flame Ribbons rushing into the scoreboard
+        let numRibbons = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? 3 : 5;
+        let ribbonSegments = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? 5 : 7;
         stroke(255, 225, 110, 230 * intensity);
-        strokeWeight(4 * intensity);
+        strokeWeight(3.5 * intensity);
         noFill();
-        for (let rib = 0; rib < 6; rib++) {
+        for (let rib = 0; rib < numRibbons; rib++) {
             beginShape();
             vertex(mouthX, mouthY);
-            let segments = 8;
-            for (let s = 1; s < segments; s++) {
-                let t = s / segments;
+            for (let s = 1; s < ribbonSegments; s++) {
+                let t = s / ribbonSegments;
                 let lx = lerp(mouthX, targetX, t);
                 let ly = lerp(mouthY, targetY, t);
-                let spread = lerp(8, 70, t) * intensity;
-                let offset = (Math.sin(frameCount * 0.35 + rib * 1.5 + s) * spread) + random(-7, 7);
+                let spread = lerp(8, 65, t) * intensity;
+                let offset = (Math.sin(frameCount * 0.35 + rib * 1.5 + s) * spread) + random(-5, 5);
                 vertex(lx + nx * offset, ly + ny * offset);
             }
-            vertex(targetX + random(-40, 40), targetY + random(-15, 15));
+            vertex(targetX + random(-30, 30), targetY + random(-10, 10));
             endShape();
         }
 
@@ -721,10 +739,10 @@ function updateAndDrawGame() {
             let expSize = map(thunderForceTimer, 90, 60, 0, 240);
             noFill();
             stroke(255, 140, 0, 230 * intensity);
-            strokeWeight(5);
+            strokeWeight(4);
             ellipse(targetX, targetY, expSize, expSize * 0.6);
             stroke(255, 230, 50, 250 * intensity);
-            strokeWeight(3);
+            strokeWeight(2.5);
             ellipse(targetX, targetY, expSize * 0.7, expSize * 0.4);
         }
 
@@ -740,13 +758,14 @@ function updateAndDrawGame() {
 
         pop();
 
-        // Realistic dragon flame particles (fire puffs & sparks, ZERO stars!)
-        if (particleSystem && frameCount % 2 === 0) {
-            for (let i = 0; i < 4; i++) {
+        // Realistic dragon flame particles
+        let flameBursts = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? (frameCount % 3 === 0 ? 1 : 0) : (frameCount % 2 === 0 ? 3 : 0);
+        if (particleSystem && flameBursts > 0) {
+            for (let i = 0; i < flameBursts; i++) {
                 let t = random();
                 let px = lerp(mouthX, targetX, t);
                 let py = lerp(mouthY, targetY, t);
-                let spread = lerp(10, 80, t) * intensity;
+                let spread = lerp(10, 70, t) * intensity;
                 let sparkX = px + nx * random(-spread, spread);
                 let sparkY = py + ny * random(-spread, spread);
                 let dirX = (targetX - mouthX) * 0.015;

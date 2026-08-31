@@ -34,13 +34,16 @@ class Collectible {
     _drawEye() {
         const size = Collectible.w;
         const ctx = drawingContext;
+        const isMob = (typeof isMobileDevice !== 'undefined' && isMobileDevice);
 
         push();
         imageMode(CENTER);
 
-        // Golden yellow glow
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = 'rgba(255, 215, 0, 0.9)';
+        // Golden yellow glow on desktop
+        if (!isMob) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+        }
 
         // Solid golden yellow circle background
         fill(255, 215, 0); // Bright golden yellow
@@ -54,7 +57,7 @@ class Collectible {
         strokeWeight(1.2);
         ellipse(0, 0, size * 0.82, size * 0.82);
 
-        ctx.shadowBlur = 0;
+        if (!isMob) ctx.shadowBlur = 0;
 
         // Millennium Eye image/symbol inside the golden circle
         if (typeof Platform !== 'undefined' && Platform.springImage && Platform.springImage.width > 0) {
@@ -76,13 +79,16 @@ class Collectible {
         const ch = Collectible.h;
         const r = 3;
         const ctx = drawingContext;
+        const isMob = (typeof isMobileDevice !== 'undefined' && isMobileDevice);
 
         rectMode(CENTER);
         imageMode(CENTER);
 
-        // Card Glow
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = 'rgba(218, 165, 32, 0.6)';
+        // Card Glow on desktop
+        if (!isMob) {
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(218, 165, 32, 0.6)';
+        }
 
         // YGO Spell/Normal Card Background (Goldenrod / Yellow)
         fill(218, 165, 32);
@@ -94,7 +100,7 @@ class Collectible {
         strokeWeight(1);
         rect(0, 0, cw - 4, ch - 4, r - 1);
 
-        ctx.shadowBlur = 0;
+        if (!isMob) ctx.shadowBlur = 0;
 
         // Art Frame (Light brown/yellowish square, upper-middle aligned)
         let artY = -ch * 0.15;

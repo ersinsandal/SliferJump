@@ -177,29 +177,27 @@ class Platform {
             let sw = Platform.springW + pulse;
             let sh = Platform.springH + pulse * (Platform.springH / Platform.springW);
             
-            if (Platform.springImage) {
-                const ctx = drawingContext;
-
-                // 1. Layered glowing golden shadow passes behind
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-                
-                // Outer vibrant golden glow
-                ctx.shadowColor = '#FFD700';
-                ctx.shadowBlur = 16;
-                image(Platform.springImage, 0, 0, sw, sh);
-
-                // Intense yellow-gold inner contour
-                ctx.shadowColor = '#FFF066';
-                ctx.shadowBlur = 6;
-                image(Platform.springImage, 0, 0, sw, sh);
-
-                // 2. Clear shadow completely
-                ctx.shadowBlur = 0;
-                ctx.shadowColor = 'transparent';
-
-                // 3. Draw original crisp, pitch-black PNG on top
-                image(Platform.springImage, 0, 0, sw, sh);
+            if (Platform.springImage && Platform.springImage.width > 0) {
+                const isMob = (typeof isMobileDevice !== 'undefined' && isMobileDevice);
+                if (isMob) {
+                    // Fast mobile golden aura ring behind sprite
+                    noStroke();
+                    fill(255, 215, 0, 180);
+                    ellipse(0, 0, sw + 5, sh + 5);
+                    fill(255, 250, 150, 220);
+                    ellipse(0, 0, sw + 2, sh + 2);
+                    image(Platform.springImage, 0, 0, sw, sh);
+                } else {
+                    const ctx = drawingContext;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowColor = '#FFD700';
+                    ctx.shadowBlur = 12;
+                    image(Platform.springImage, 0, 0, sw, sh);
+                    ctx.shadowBlur = 0;
+                    ctx.shadowColor = 'transparent';
+                    image(Platform.springImage, 0, 0, sw, sh);
+                }
             }
             pop();
         }

@@ -1,3 +1,9 @@
+const isMobileDevice = (() => {
+    if (typeof navigator === 'undefined') return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || '') || 
+           (typeof window !== 'undefined' && (window.innerWidth <= 600 || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches)));
+})();
+
 /**
  * SliferJump 2.0: Rise of Slifer
  * Global Configuration
@@ -51,7 +57,7 @@ const config = {
     SHAKE_DURATION: 15,
 
     // ─── Particle Limits ───
-    MAX_PARTICLES: 200,
+    MAX_PARTICLES: isMobileDevice ? 90 : 200,
 };
 
 /**

@@ -131,13 +131,15 @@ class Slifer {
                     push();
                     let orbit = Slifer.w * 1.0;
                     rotate(frameCount * 0.04);
+                    let useBlur = (typeof isMobileDevice === 'undefined' || !isMobileDevice);
+                    if (useBlur) {
+                        drawingContext.shadowBlur = 10;
+                        drawingContext.shadowColor = 'rgba(255,255,0,0.75)';
+                    }
                     for (let si = 0; si < 3; si++) {
                         push();
                         rotate((TWO_PI / 3) * si);
                         translate(0, -orbit);
-                        
-                        drawingContext.shadowBlur = 15;
-                        drawingContext.shadowColor = 'rgba(255,255,0,0.85)';
 
                         // Long, sharp golden blade pointing straight out
                         fill(250, 245, 210, 240);
@@ -167,10 +169,9 @@ class Slifer {
                         noStroke();
                         fill(255, 215, 0, 230);
                         ellipse(0, 25, 6, 6);
-
-                        drawingContext.shadowBlur = 0;
                         pop();
                     }
+                    if (useBlur) drawingContext.shadowBlur = 0;
                     pop();
                 } else if (p.type.id === 'reborn') {
                     // Draw a pulsating green ring

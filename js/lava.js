@@ -68,15 +68,14 @@ class LavaSystem {
         if (!this.active) return;
 
         push();
-        // Lava glow
+        // Lava glow (optimized 2-tier ambient aura)
         noStroke();
-        for (let i = 0; i < 50; i += 10) {
-            fill(255, 100, 0, 50 - i);
-            rect(0, this.y - 20 - i, width, i + 20);
-        }
+        fill(255, 80, 0, 35);
+        rect(0, this.y - 40, width, 40);
+        fill(255, 120, 0, 70);
+        rect(0, this.y - 18, width, 18);
 
         // Lava body
-        // Prevent 0-height gradient DOMException which crashes the browser canvas
         let gradY = this.y;
         if (Math.abs(gradY - height) < 0.1) gradY = height - 0.1;
         let gradient = drawingContext.createLinearGradient(0, gradY, 0, height);
@@ -84,9 +83,10 @@ class LavaSystem {
         gradient.addColorStop(1, 'rgba(139, 0, 0, 1)');  // DarkRed
         drawingContext.fillStyle = gradient;
         
+        let step = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? 16 : 10;
         beginShape();
         vertex(0, height);
-        for (let x = 0; x <= width; x += 10) {
+        for (let x = 0; x <= width; x += step) {
             let wave = sin(x * 0.02 + this.waveOffset) * 10;
             vertex(x, this.y + wave);
         }
@@ -98,7 +98,7 @@ class LavaSystem {
         stroke(255, 150, 0, 200);
         strokeWeight(2);
         beginShape();
-        for (let x = 0; x <= width; x += 20) {
+        for (let x = 0; x <= width; x += step * 1.5) {
             let wave = sin(x * 0.02 + this.waveOffset) * 10;
             vertex(x, this.y + wave + 2);
         }
@@ -106,7 +106,8 @@ class LavaSystem {
 
         // Bubbles
         noStroke();
-        for (let b of this.bubbles) {
+        for (let i = 0; i < this.bubbles.length; i++) {
+            let b = this.bubbles[i];
             fill(255, 150, 0, b.alpha);
             ellipse(b.x, b.y, b.radius * 2);
             fill(255, 255, 200, b.alpha);
