@@ -122,9 +122,9 @@ function preload() {
  * Setup — initialization
  */
 function setup() {
-    // 1. Force 1:1 pixel density to eliminate high-DPI (2x-4x Retina) fill rate bottleneck on mobile
+    // Crisp high-resolution pixel density (up to 2x) for razor-sharp text, HUD bars, and sprites
     if (typeof pixelDensity === 'function') {
-        pixelDensity(1);
+        pixelDensity(Math.min(window.devicePixelRatio || 1, 2));
     }
     frameRate(config.FPS);
     
@@ -485,7 +485,8 @@ function updateAndDrawGame() {
         if (gameStats.rebornCount > 0) {
             gameStats.rebornCount--;
             slifer.y = height - 100;
-            slifer.vy = -Slifer.superJumpForce * 1.3;
+            slifer.vy = -Slifer.superJumpForce * 1.4;
+            slifer.invincibleTimer = 45;
             particleSystem.emitDeathBurst(slifer.x, slifer.y);
             SoundManager.synthDragonRoar();
             triggerShake(12, 20);
@@ -496,7 +497,7 @@ function updateAndDrawGame() {
         }
     }
 
-    let isInvincible = (typeof thunderForceTimer !== 'undefined' && thunderForceTimer > 0);
+    let isInvincible = (typeof thunderForceTimer !== 'undefined' && thunderForceTimer > 0) || (slifer.invincibleTimer > 0);
 
     if (!died && !isInvincible) {
         // Death from orichalcos (Millennium Eye protects player and is consumed)
@@ -507,6 +508,7 @@ function updateAndDrawGame() {
                 questSystem.updateStat("eyesCollected", gameStats.eyesCollected);
                 orichalcos = null;
                 slifer.vy = -Slifer.superJumpForce;
+                slifer.invincibleTimer = 30;
                 particleSystem.emitDeathBurst(slifer.x, slifer.y);
                 particleSystem.emitCollectBurst(slifer.x, slifer.y, "#FFD700");
                 SoundManager.playShieldBreak();
@@ -531,6 +533,15 @@ function updateAndDrawGame() {
                 particleSystem.emitCollectBurst(slifer.x, slifer.y, "#FFD700");
                 SoundManager.playShieldBreak();
                 triggerShake(10, 20);
+            } else if (gameStats.rebornCount > 0) {
+                gameStats.rebornCount--;
+                meteorSystem.removeMeteor(collidingMeteor);
+                slifer.vy = -Slifer.superJumpForce * 1.5;
+                slifer.invincibleTimer = 45;
+                particleSystem.emitDeathBurst(slifer.x, slifer.y);
+                particleSystem.emitCollectBurst(slifer.x, slifer.y, "#00BFFF");
+                SoundManager.playRoar();
+                triggerShake(12, 20);
             } else {
                 died = true;
                 deathType = "meteor";
@@ -551,6 +562,15 @@ function updateAndDrawGame() {
                 particleSystem.emitCollectBurst(slifer.x, slifer.y, "#FFD700");
                 SoundManager.playShieldBreak();
                 triggerShake(10, 20);
+            } else if (gameStats.rebornCount > 0) {
+                gameStats.rebornCount--;
+                monsterSystem.removeMonster(collidingMonster);
+                slifer.vy = -Slifer.superJumpForce * 1.5;
+                slifer.invincibleTimer = 45;
+                particleSystem.emitDeathBurst(slifer.x, slifer.y);
+                particleSystem.emitCollectBurst(slifer.x, slifer.y, "#00BFFF");
+                SoundManager.playRoar();
+                triggerShake(12, 20);
             } else {
                 died = true;
                 deathType = "monster";
@@ -569,6 +589,14 @@ function updateAndDrawGame() {
                 particleSystem.emitCollectBurst(slifer.x, slifer.y, "#FFD700");
                 SoundManager.playShieldBreak();
                 triggerShake(10, 20);
+            } else if (gameStats.rebornCount > 0) {
+                gameStats.rebornCount--;
+                slifer.vy = -Slifer.superJumpForce * 1.5;
+                slifer.invincibleTimer = 45;
+                particleSystem.emitDeathBurst(slifer.x, slifer.y);
+                particleSystem.emitCollectBurst(slifer.x, slifer.y, "#00BFFF");
+                SoundManager.playRoar();
+                triggerShake(12, 20);
             } else {
                 died = true;
                 deathType = "laser";
@@ -584,6 +612,7 @@ function updateAndDrawGame() {
                 gameStats.rebornCount--;
                 slifer.y = lavaSystem.y - Slifer.h - 30;
                 slifer.vy = -Slifer.superJumpForce * 1.5;
+                slifer.invincibleTimer = 45;
                 particleSystem.emitDeathBurst(slifer.x, slifer.y);
                 particleSystem.emitCollectBurst(slifer.x, slifer.y, "#00BFFF");
                 SoundManager.playRoar();
@@ -994,10 +1023,13 @@ function drawGameOverAnimation() {
         particleSystem.update();
         particleSystem.render();
 
+        push();
+        rectMode(CORNER);
         const alpha = map(deathAnimTimer, DEATH_ANIM_DURATION, 0, 0, winStatus ? 50 : 150);
         fill(winStatus ? 255 : 0, winStatus ? 255 : 0, winStatus ? 255 : 0, alpha);
         noStroke();
         rect(0, 0, width, height);
+        pop();
     }
 
     if (deathAnimTimer <= 0 && !UI.gameOverVisible) {

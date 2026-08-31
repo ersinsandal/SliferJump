@@ -910,7 +910,7 @@ class UI {
                     <p>👁️ <b>Milenyum Gözü (Toplanabilir):</b> Altın daire içindeki toplanabilir göz. Envanterde birikir; Orichalcos karadeliğine girildiğinde 1 göz feda edilerek karadeliği parçalar ve sizi kurtarır.</p>
                     <p>👁️ <b>Milenyum Yayı (Basamak):</b> Basamakların üzerindeki altın ışıltılı yay. Üzerine bastığınızda süper zıplama ile yükseklere fırlatır.</p>
                     <p>⚔️ <b>Işık Kılıçları (Swords of Revealing Light):</b> 10 saniye boyunca koruyucu kalkan açar. Meteor, canavar veya lazer çarpışmasında kalkan kırılarak sizi 1 ölümcül darbeden korur.</p>
-                    <p>☥ <b>Yeniden Doğuş (Monster Reborn):</b> En fazla 3 adet birikir. Boşluğa düştüğünüzde veya lavlara temas ettiğinizde sizi kurtararak yukarı fırlatır. <i>(⚠️ Sadece Orichalcos karadeliğine karşı İŞE YARAMAZ!)</i></p>
+                    <p>☥ <b>Yeniden Doğuş (Monster Reborn):</b> En fazla 3 adet birikir. Boşluğa düştüğünüzde, lavlara temas ettiğinizde, meteor veya canavar çarptığında sizi kurtararak yukarı fırlatır. <i>(⚠️ Sadece Orichalcos karadeliğine karşı İŞE YARAMAZ!)</i></p>
                     <p>🏺 <b>Açgözlülük Küpü (Pot of Greed):</b> 10 saniye boyunca kazandığınız tüm tırmanma puanlarını 2 katına çıkarır.</p>
                     
                     <hr style="border-color: rgba(255,85,85,0.3); margin: 12px 0;">

@@ -14,13 +14,30 @@ class SoundManager {
      * Initializes the AudioContext. Should be called on user interaction.
      */
     static init() {
+        if (typeof userStartAudio === 'function') {
+            try { userStartAudio(); } catch(e) {}
+        }
         if (!this.audioCtx) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.audioCtx = new AudioContext();
+            if (AudioContext) this.audioCtx = new AudioContext();
         }
-        if (this.audioCtx.state === 'suspended') {
-            this.audioCtx.resume();
+        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+            try { this.audioCtx.resume(); } catch(e) {}
         }
+    }
+
+    /**
+     * Safely plays a p5.sound object preventing voice-stacking distortion on mobile
+     */
+    static safePlay(soundObj) {
+        if (this.muted || !soundObj) return;
+        try {
+            if (typeof soundObj.isLoaded === 'function' && !soundObj.isLoaded()) return;
+            if (typeof soundObj.isPlaying === 'function' && soundObj.isPlaying()) {
+                soundObj.stop();
+            }
+            soundObj.play();
+        } catch(e) {}
     }
 
     /**
@@ -32,7 +49,7 @@ class SoundManager {
         if (window.outputVolume) { // p5.sound master volume if available
             window.outputVolume(this.muted ? 0 : this.masterVolume);
         }
-        if (this.ambientGain) {
+        if (this.ambientGain && this.audioCtx) {
             this.ambientGain.gain.setValueAtTime(this.muted ? 0 : this.masterVolume * 0.1, this.audioCtx.currentTime);
         }
     }
@@ -57,23 +74,23 @@ class SoundManager {
 
     // --- p5.sound Wrappers ---
     
-    static playJump() { if (!this.muted && this.sounds && this.sounds.jump) try { this.sounds.jump.play(); } catch(e) {} }
-    static playSpring() { if (!this.muted && this.sounds && this.sounds.spring) try { this.sounds.spring.play(); } catch(e) {} }
-    static playFragile() { if (!this.muted && this.sounds && this.sounds.fragile) try { this.sounds.fragile.play(); } catch(e) {} }
-    static playFalling() { if (!this.muted && this.sounds && this.sounds.falling) try { this.sounds.falling.play(); } catch(e) {} }
+    static playJump() { this.safePlay(this.sounds?.jump); }
+    static playSpring() { this.safePlay(this.sounds?.spring); }
+    static playFragile() { this.safePlay(this.sounds?.fragile); }
+    static playFalling() { this.safePlay(this.sounds?.falling); }
     static playBlackhole() {
         if (this.muted) return;
         let played = false;
         if (this.sounds && this.sounds.blackhole) {
-            try { this.sounds.blackhole.play(); played = true; } catch(e) {}
+            try { this.safePlay(this.sounds.blackhole); played = true; } catch(e) {}
         }
         if (!played) {
             this.synthBlackhole();
         }
     }
-    static playExplosion() { if (!this.muted && this.sounds && this.sounds.explosion) try { this.sounds.explosion.play(); } catch(e) {} }
-    static playBreak() { if (!this.muted && this.sounds && this.sounds.break) try { this.sounds.break.play(); } catch(e) {} }
-    static playLava() { if (!this.muted && this.sounds && this.sounds.lava) try { this.sounds.lava.play(); } catch(e) {} }
+    static playExplosion() { this.safePlay(this.sounds?.explosion); }
+    static playBreak() { this.safePlay(this.sounds?.break); }
+    static playLava() { this.safePlay(this.sounds?.lava); }
 
     static playTone(freq, type, duration, vol, envelope = {}) {
         if (this.muted || !this.audioCtx) return;

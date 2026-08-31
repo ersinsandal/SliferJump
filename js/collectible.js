@@ -221,15 +221,20 @@ class CollectibleSystem {
     }
 
     checkCollection(playerX, playerY, playerW, playerH) {
+        let pLeft = playerX - playerW / 2;
+        let pRight = playerX + playerW / 2;
+        let pTop = playerY - playerH / 2;
+        let pBottom = playerY + playerH / 2;
+
         for (let i = this.collectibles.length - 1; i >= 0; i--) {
             let c = this.collectibles[i];
             if (!c.collected) {
                 let box = c.getHitbox();
                 if (
-                    playerX < box.x + box.w &&
-                    playerX + playerW > box.x &&
-                    playerY < box.y + box.h &&
-                    playerY + playerH > box.y
+                    pLeft < box.x + box.w &&
+                    pRight > box.x &&
+                    pTop < box.y + box.h &&
+                    pBottom > box.y
                 ) {
                     c.collected = true;
                     this.activatePowerUp(c.type);

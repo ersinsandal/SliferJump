@@ -99,13 +99,8 @@ class Platform {
         rectMode(CENTER);
         noStroke();
         
-        let c1 = color(realm.platformColor1 || '#aaa');
-        let c2 = color(realm.platformColor2 || '#555');
-
-        if (this.type === Platform.platformTypes.TRAP) {
-            c1 = lerpColor(c1, color(255, 50, 50), 0.3);
-            c2 = lerpColor(c2, color(200, 0, 0), 0.3);
-        }
+        let c1 = (this.type === Platform.platformTypes.TRAP) ? '#ff4040' : (realm.platformColor1 || '#aaa');
+        let c2 = (this.type === Platform.platformTypes.TRAP) ? '#aa1010' : (realm.platformColor2 || '#555');
 
         // Draw body (shadow layer)
         fill(c2);
@@ -119,7 +114,6 @@ class Platform {
         if (realmId === 1) {
             fill(34, 139, 34);
             noStroke();
-            // (Removed green arcs that looked like tiny eyes)
             rect(this.x - 25, this.y - Platform.h / 2, 20, 4, 2);
             rect(this.x + 20, this.y - Platform.h / 2, 15, 4, 2);
         } else if (realmId === 2) {
@@ -139,9 +133,9 @@ class Platform {
             triangle(this.x - 35, this.y - 4, this.x - 25, this.y - 4, this.x - 30, this.y + 6);
             triangle(this.x + 25, this.y - 4, this.x + 35, this.y - 4, this.x + 30, this.y + 6);
         } else if (realmId === 5) {
-            fill(255, 215, 0, 80);
+            fill(255, 215, 0, 100);
             noStroke();
-            rect(this.x, this.y, Platform.w + 8, Platform.h + 8, 12);
+            rect(this.x, this.y, Platform.w - 10, Platform.h - 8, 4);
         }
 
         // Type specific decorations
@@ -173,31 +167,33 @@ class Platform {
             translate(springX, springY);
             imageMode(CENTER);
 
-            let pulse = Math.sin(frameCount * 0.1) * 1.5;
+            let pulse = Math.sin(frameCount * 0.12) * 1.5;
             let sw = Platform.springW + pulse;
             let sh = Platform.springH + pulse * (Platform.springH / Platform.springW);
             
             if (Platform.springImage && Platform.springImage.width > 0) {
-                const isMob = (typeof isMobileDevice !== 'undefined' && isMobileDevice);
-                if (isMob) {
-                    // Fast mobile golden aura ring behind sprite
-                    noStroke();
-                    fill(255, 215, 0, 180);
-                    ellipse(0, 0, sw + 5, sh + 5);
-                    fill(255, 250, 150, 220);
-                    ellipse(0, 0, sw + 2, sh + 2);
-                    image(Platform.springImage, 0, 0, sw, sh);
-                } else {
-                    const ctx = drawingContext;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
-                    ctx.shadowColor = '#FFD700';
-                    ctx.shadowBlur = 12;
-                    image(Platform.springImage, 0, 0, sw, sh);
-                    ctx.shadowBlur = 0;
-                    ctx.shadowColor = 'transparent';
-                    image(Platform.springImage, 0, 0, sw, sh);
-                }
+                const ctx = drawingContext;
+
+                // 1. Layered glowing golden shadow passes directly on the PNG shape
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                // Outer vibrant golden glow
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = 18;
+                image(Platform.springImage, 0, 0, sw, sh);
+
+                // Intense yellow-gold inner contour
+                ctx.shadowColor = '#FFF066';
+                ctx.shadowBlur = 8;
+                image(Platform.springImage, 0, 0, sw, sh);
+
+                // 2. Clear shadow completely
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+
+                // 3. Draw original crisp, pitch-black PNG on top
+                image(Platform.springImage, 0, 0, sw, sh);
             }
             pop();
         }

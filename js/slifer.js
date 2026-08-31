@@ -31,6 +31,7 @@ class Slifer {
         this.deathSpin = 0;
         this.alive = true;
         this.eyeGlow = 0;
+        this.invincibleTimer = 0;
     }
 
     update() {
@@ -76,6 +77,11 @@ class Slifer {
 
         // Breath timer
         this.breathTimer++;
+
+        // Grace period invincibility timer
+        if (this.invincibleTimer > 0) {
+            this.invincibleTimer--;
+        }
     }
 
     render(particleSystem) {
