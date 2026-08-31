@@ -1279,26 +1279,16 @@ function windowResized() {
 function applyScaling() {
     config.STEPS = 9;
     stepSize = Math.floor(height / config.STEPS);
-    let isMob = window.matchMedia("only screen and (max-width: 768px)").matches || (typeof isMobileDevice !== 'undefined' && isMobileDevice);
-    isMobile = isMob;
+    isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
 
-    // Natural fluid physics
+    // Natural fluid physics (100% identical across PC and Mobile)
     config.GRAVITY = 0.22;
     config.MAX_FALLING_SPEED = 12.0;
 
-    // Base jump height calculation
-    let baseJump = Math.sqrt(2 * config.GRAVITY * (stepSize * 1.50));
-    
-    // Only mobile jump power is reduced to 75%, desktop remains 100% normal
-    if (isMob) {
-        Slifer.jumpForce = baseJump * 0.75;
-        Slifer.superJumpForce = Slifer.jumpForce * 1.75;
-        Slifer.speed = 4.2;
-    } else {
-        Slifer.jumpForce = baseJump;
-        Slifer.superJumpForce = baseJump * 1.75;
-        Slifer.speed = 4.8;
-    }
+    // Jump height and forces 100% identical on desktop and mobile
+    Slifer.jumpForce = Math.sqrt(2 * config.GRAVITY * (stepSize * 1.50));
+    Slifer.superJumpForce = Slifer.jumpForce * 1.75;
+    Slifer.speed = 4.8;
 
     // Proportional visual scaling
     if (height > 0) {
