@@ -1281,12 +1281,16 @@ function applyScaling() {
     stepSize = Math.floor(height / config.STEPS);
     isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
 
-    // Lock identical PC physics across all devices (PC & Mobile feel 100% the same)
-    config.GRAVITY = 0.21;
-    config.MAX_FALLING_SPEED = 11.0;
-    Slifer.jumpForce = 8.8;
-    Slifer.superJumpForce = 15.5;
-    Slifer.speed = 6.0;
+    // Natural fluid physics
+    config.GRAVITY = 0.22;
+    config.MAX_FALLING_SPEED = 12.0;
+
+    // Jump height calibrated to EXACTLY 1.50 platform steps (comfortably clears 1 step, max 1.50x, never skips 2 steps)
+    Slifer.jumpForce = Math.sqrt(2 * config.GRAVITY * (stepSize * 1.50));
+    Slifer.superJumpForce = Slifer.jumpForce * 1.75;
+    
+    // Smooth, controlled, calm horizontal steering (no flying/overshooting)
+    Slifer.speed = 4.8;
 
     // Proportional visual scaling
     if (height > 0) {
