@@ -1281,24 +1281,28 @@ function applyScaling() {
     stepSize = Math.floor(height / config.STEPS);
     isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
 
+    // Lock identical PC physics across all devices (PC & Mobile feel 100% the same)
+    config.GRAVITY = 0.21;
+    config.MAX_FALLING_SPEED = 11.0;
+    Slifer.jumpForce = 8.8;
+    Slifer.superJumpForce = 15.5;
+    Slifer.speed = 6.0;
+
+    // Proportional visual scaling
     if (height > 0) {
         const REF_HEIGHT = 1289;
         const heightRatio = height / REF_HEIGHT;
-        Slifer.jumpForce *= heightRatio;
-        Slifer.superJumpForce *= heightRatio;
-        config.GRAVITY *= heightRatio;
-        config.MAX_FALLING_SPEED *= heightRatio;
-        Slifer.h *= heightRatio;
-        Platform.h *= heightRatio;
-        Platform.springH *= heightRatio;
+        Slifer.h = 80 * heightRatio;
+        Platform.h = 28 * heightRatio;
+        Platform.springH = 33 * heightRatio;
     }
     if (width > 0) {
         const REF_WIDTH = 725;
         const widthRatio = width / REF_WIDTH;
-        Slifer.speed *= widthRatio;
-        Slifer.w *= widthRatio;
-        Platform.w *= widthRatio;
-        Platform.springW *= widthRatio;
+        Slifer.w = 80 * widthRatio;
+        Platform.w = 110 * widthRatio;
+        Platform.springW = 81 * widthRatio;
+        Platform.speed = 2 * widthRatio;
     }
 }
 
