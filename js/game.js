@@ -111,11 +111,6 @@ function preload() {
     sound.spring = loadSound(basePath + "/assets/sound/spring.mp3");
     sound.fragile = loadSound(basePath + "/assets/sound/fragile.mp3");
     sound.falling = loadSound(basePath + "/assets/sound/falling.mp3");
-
-    // Asynchronously load heavy background music without stalling setup
-    sound.background = loadSound(basePath + "/assets/sound/background.mp3", (s) => {
-        if (s && typeof s.setLoop === 'function') s.setLoop(true);
-    });
 }
 
 /**
@@ -156,10 +151,20 @@ function setup() {
     // Initialize UI
     UI.init();
 
-    // Start in menu state
+    // Start in menu state instantly
     gameState = GAME_STATE.MENU;
-    if (sound.background && typeof sound.background.setLoop === 'function') sound.background.setLoop(true);
-    setTimeout(() => { if (gameState === GAME_STATE.MENU) SoundManager.playMenuMusic(); }, 1000);
+
+    // Asynchronously load heavy background music in background without blocking initial game startup
+    setTimeout(() => {
+        sound.background = loadSound("./assets/sound/background.mp3", (s) => {
+            if (s && typeof s.setLoop === 'function') {
+                s.setLoop(true);
+                if (gameState === GAME_STATE.MENU && !SoundManager.isMuted()) {
+                    SoundManager.playMenuMusic();
+                }
+            }
+        });
+    }, 50);
 
     // Asynchronously queue subsequent level background loads without network congestion
     setTimeout(() => {
@@ -1188,20 +1193,21 @@ function touchStarted() {
     }
     if (gameState !== GAME_STATE.PLAYING) return;
     
+    let tx = (touches && touches.length > 0) ? touches[0].x : mouseX;
+    let ty = (touches && touches.length > 0) ? touches[0].y : mouseY;
+
     // Check if tapped on energy bar
-    if (gameStats.energy >= 100 && (!gameStats.thunderForceCooldown || gameStats.thunderForceCooldown <= 0) && touches.length > 0) {
-        let tx = touches[0].x;
-        let ty = touches[0].y;
+    if (gameStats.energy >= 100 && (!gameStats.thunderForceCooldown || gameStats.thunderForceCooldown <= 0)) {
         if (tx > width - 50 && ty > height / 2 - 100 && ty < height / 2 + 100) {
             activateThunderForce();
             return false;
         }
     }
 
-    if (mouseX < width / 2 && slifer.vx !== -Slifer.speed) {
+    if (tx < width / 2) {
         slifer.vx = -Slifer.speed;
         slifer.direction = Slifer.Direction.LEFT;
-    } else if (mouseX >= width / 2 && slifer.vx !== -Slifer.speed) {
+    } else {
         slifer.vx = Slifer.speed;
         slifer.direction = Slifer.Direction.RIGHT;
     }

@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
   <head>
-    <script>
-    window.onerror = function(msg, src, lineno, colno, error) {
-        fetch('http://localhost:5001/error-log', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({msg: msg, stack: error ? error.stack : ""})
-        });
-    };
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content="SliferJump 2.0: Rise of Slifer — Anime temalı epik platform zıplama oyunu" />

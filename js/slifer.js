@@ -3,9 +3,9 @@ class Slifer {
     static rightImage = null;
     static w = 80;
     static h = 80;
-    static jumpForce = 10.5;
-    static superJumpForce = 14;
-    static speed = 7.2;
+    static jumpForce = 11.0;
+    static superJumpForce = 15.0;
+    static speed = 9.0;
 
     static LEFT = 0;
     static RIGHT = 1;
