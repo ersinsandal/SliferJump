@@ -6,7 +6,7 @@ class Meteor {
         this.sizeStr = sizeStr; // 'SMALL', 'MEDIUM', 'LARGE'
         
         let sizeMap = { 'SMALL': 15, 'MEDIUM': 25, 'LARGE': 40 };
-        let speedMap = { 'SMALL': 8, 'MEDIUM': 6, 'LARGE': 4 };
+        let speedMap = { 'SMALL': 8, 'MEDIUM': 6.5, 'LARGE': 5.5 };
         
         this.radius = sizeMap[sizeStr] || 25;
         this.speed = speedMap[sizeStr] || 6;
@@ -37,12 +37,17 @@ class Meteor {
         } else if (this.active && !this.exploded) {
             this.y += this.speed;
             this.angle += 0.05;
-            this.trail.push({ x: this.x, y: this.y, life: 255 });
             
-            // Rich fiery trail on all devices
-            let maxTrail = 18;
+            // Spawn trail sleekly from behind the falling meteor
+            let trailY = this.y - this.radius * 0.25;
+            this.trail.push({ x: this.x, y: trailY, life: 255 });
+            
+            // Proportional trail length: Large meteor gets 26-point majestic fiery tail
+            let maxTrail = this.sizeStr === 'LARGE' ? 26 : (this.sizeStr === 'MEDIUM' ? 18 : 14);
             if (this.trail.length > maxTrail) this.trail.shift();
-            for (let i = 0; i < this.trail.length; i++) this.trail[i].life -= 12;
+            
+            let decay = this.sizeStr === 'LARGE' ? 8 : (this.sizeStr === 'MEDIUM' ? 12 : 16);
+            for (let i = 0; i < this.trail.length; i++) this.trail[i].life -= decay;
             
             if (this.y >= this.targetY) {
                 this.exploded = true;
@@ -75,20 +80,20 @@ class Meteor {
         } else if (this.active && !this.exploded) {
             push();
             
-            // Fiery, glowing meteor tail
+            // Sleek, vibrant glowing meteor flame tail
             noStroke();
             let tLen = this.trail.length;
             for (let i = 0; i < tLen; i++) {
                 let t = this.trail[i];
-                let progress = (i + 1) / tLen;
-                let size = Math.max(2, progress * (this.radius * 1.6));
+                let progress = (i + 1) / (tLen || 1);
+                let size = 4 + progress * (this.radius * 1.1);
                 let alpha = Math.min(255, Math.max(0, t.life));
                 
-                // Outer blazing orange flame
-                fill(255, progress * 140, 20, alpha * 0.85);
+                // Outer vibrant blazing flame
+                fill(255, progress * 130 + 15, 0, alpha * 0.85);
                 ellipse(t.x, t.y, size);
-                // Bright burning yellow core
-                fill(255, 230, 80, alpha);
+                // Glowing golden core
+                fill(255, 235, 60, alpha * 0.95);
                 ellipse(t.x, t.y, size * 0.5);
             }
             
@@ -159,7 +164,6 @@ class MeteorSystem {
     }
 
     render() {
-        for (let m of this.meteors) m.renderWarning();
         for (let m of this.meteors) m.render();
     }
 
