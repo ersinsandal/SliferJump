@@ -98,9 +98,13 @@ class DynamicBackground {
                 imgW = h * (bgImage.width / bgImage.height);
             }
             
-            tint(255, alphaValue);
-            image(bgImage, -(imgW - w) / 2, 0, imgW, imgH); // Center it horizontally if wider
-            noTint();
+            if (alphaValue < 255) {
+                tint(255, alphaValue);
+                image(bgImage, -(imgW - w) / 2, 0, imgW, imgH);
+                noTint();
+            } else {
+                image(bgImage, -(imgW - w) / 2, 0, imgW, imgH);
+            }
             
             // Semi-transparent black curtain to make platforms pop across entire screen
             noStroke();

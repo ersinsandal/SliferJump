@@ -18,6 +18,13 @@ class Meteor {
         this.exploded = false;
         this.explosionTimer = 30;
         this.trail = [];
+
+        // Precompute jagged rock points for zero per-frame allocation
+        this.rockPoints = [];
+        for (let i = 0; i < TWO_PI; i += PI / 4) {
+            let r = this.radius + random(-3, 3);
+            this.rockPoints.push({ x: cos(i) * r, y: sin(i) * r });
+        }
     }
 
     update() {
@@ -30,11 +37,12 @@ class Meteor {
         } else if (this.active && !this.exploded) {
             this.y += this.speed;
             this.angle += 0.05;
-            this.trail.push({x: this.x, y: this.y, life: 255});
+            this.trail.push({ x: this.x, y: this.y, life: 255 });
             
-            let maxTrail = (typeof isMobileDevice !== 'undefined' && isMobileDevice) ? 8 : 15;
+            // Rich fiery trail on all devices
+            let maxTrail = 18;
             if (this.trail.length > maxTrail) this.trail.shift();
-            for (let i = 0; i < this.trail.length; i++) this.trail[i].life -= 18;
+            for (let i = 0; i < this.trail.length; i++) this.trail[i].life -= 12;
             
             if (this.y >= this.targetY) {
                 this.exploded = true;
@@ -67,28 +75,33 @@ class Meteor {
         } else if (this.active && !this.exploded) {
             push();
             
-            // Trail
+            // Fiery, glowing meteor tail
             noStroke();
             let tLen = this.trail.length;
             for (let i = 0; i < tLen; i++) {
                 let t = this.trail[i];
-                let progress = i / (tLen || 1);
-                let size = 5 + progress * (this.radius * 1.5);
-                fill(255, progress * 150, 0, Math.max(0, t.life));
+                let progress = (i + 1) / tLen;
+                let size = Math.max(2, progress * (this.radius * 1.6));
+                let alpha = Math.min(255, Math.max(0, t.life));
+                
+                // Outer blazing orange flame
+                fill(255, progress * 140, 20, alpha * 0.85);
                 ellipse(t.x, t.y, size);
+                // Bright burning yellow core
+                fill(255, 230, 80, alpha);
+                ellipse(t.x, t.y, size * 0.5);
             }
             
             translate(this.x, this.y);
             rotate(this.angle);
             
-            // Rock
+            // Rock body
             fill(100, 50, 50);
             stroke(50, 20, 20);
             strokeWeight(2);
             beginShape();
-            for (let i = 0; i < TWO_PI; i += PI / 4) {
-                let r = this.radius + random(-5, 5);
-                vertex(cos(i) * r, sin(i) * r);
+            for (let i = 0; i < this.rockPoints.length; i++) {
+                vertex(this.rockPoints[i].x, this.rockPoints[i].y);
             }
             endShape(CLOSE);
             

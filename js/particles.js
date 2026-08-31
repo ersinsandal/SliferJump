@@ -129,9 +129,10 @@ class ParticleSystem {
         if (this.particles.length < this.maxParticles) {
             this.particles.push(p);
         } else {
-            // Replace oldest particle with zero array shifting overhead
-            this.particles[0] = p;
-            this.particles.push(this.particles.shift());
+            // O(1) replace oldest with zero array re-allocation
+            if (!this._replaceIdx) this._replaceIdx = 0;
+            this.particles[this._replaceIdx % this.particles.length] = p;
+            this._replaceIdx++;
         }
     }
 

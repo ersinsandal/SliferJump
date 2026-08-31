@@ -577,10 +577,12 @@ class UI {
         
         // Progress gradient
         const ctx = drawingContext;
-        const grad = ctx.createLinearGradient(20, 0, 200, 0);
-        grad.addColorStop(0, '#00d2ff');
-        grad.addColorStop(1, '#3a7bd5');
-        ctx.fillStyle = grad;
+        if (!UI._levelGrad) {
+            UI._levelGrad = ctx.createLinearGradient(20, 0, 200, 0);
+            UI._levelGrad.addColorStop(0, '#00d2ff');
+            UI._levelGrad.addColorStop(1, '#3a7bd5');
+        }
+        ctx.fillStyle = UI._levelGrad;
         const pWidth = 180 * progress;
         if (pWidth > 0) {
             rect(20, 36, pWidth, 8, 4);
@@ -607,7 +609,11 @@ class UI {
         const cdSecs = isCooldown ? Math.ceil(gameStats.thunderForceCooldown / 60) : 0;
 
         fill(10, 15, 30, isCooldown ? 150 : 180);
-        stroke(isCooldown ? color(100, 110, 130, 100) : color(255, 69, 0, 80));
+        if (isCooldown) {
+            stroke(100, 110, 130, 100);
+        } else {
+            stroke(255, 69, 0, 80);
+        }
         strokeWeight(1.5);
         rect(energyX, energyY, energyW, energyH, 8);
         noStroke();
