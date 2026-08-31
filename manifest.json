@@ -1,0 +1,19 @@
+{
+    "name": "SliferJump 2.0",
+    "short_name": "SliferJump",
+    "description": "Rise of Slifer — Anime temalı epik platform zıplama oyunu",
+    "start_url": "./index.html",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "background_color": "#0a0a1a",
+    "theme_color": "#1a0a2e",
+    "categories": ["games", "entertainment"],
+    "icons": [
+        {
+            "src": "./assets/img/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

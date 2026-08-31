@@ -1,0 +1,28 @@
+{
+    "appId": "com.slifersoft.sliferjump",
+    "appName": "SliferJump 2.0",
+    "webDir": ".",
+    "bundledWebRuntime": false,
+    "server": {
+        "androidScheme": "https"
+    },
+    "plugins": {
+        "StatusBar": {
+            "style": "dark",
+            "backgroundColor": "#0a0a1a"
+        },
+        "SplashScreen": {
+            "launchAutoHide": true,
+            "backgroundColor": "#0a0a1a",
+            "showSpinner": false,
+            "androidSplashResourceName": "splash"
+        }
+    },
+    "android": {
+        "allowMixedContent": true,
+        "backgroundColor": "#0a0a1a"
+    },
+    "ios": {
+        "backgroundColor": "#0a0a1a"
+    }
+}

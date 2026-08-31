@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <script>
+    window.onerror = function(msg, src, lineno, colno, error) {
+        fetch('http://localhost:5001/error-log', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({msg: msg, stack: error ? error.stack : ""})
+        });
+    };
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="SliferJump 2.0: Rise of Slifer — Anime temalı epik platform zıplama oyunu" />
+    <meta name="theme-color" content="#1a0a2e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <title>SliferJump 2.0 — Rise of Slifer</title>
+    <link rel="icon" type="image/png" href="./assets/img/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/img/logo.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/style.css?v=3.5" />
+
+    <!-- Libraries -->
+    <script src="./lib/p5.min.js"></script>
+    <script src="./lib/p5.sound.min.js"></script>
+
+    <!-- Config (must load first) -->
+    <script src="./js/config.js"></script>
+
+    <!-- Core Systems -->
+    <script src="./js/storage.js"></script>
+    <script src="./js/sound-manager.js"></script>
+    <script src="./js/particles.js"></script>
+
+    <!-- Game Entities -->
+    <script src="./js/slifer.js"></script>
+    <script src="./js/platform.js"></script>
+    <script src="./js/orichalcos.js"></script>
+    <script src="./js/meteor.js"></script>
+    <script src="./js/lava.js"></script>
+    <script src="./js/monster.js"></script>
+    <script src="./js/collectible.js"></script>
+    <script src="./js/background.js"></script>
+
+    <!-- Game Systems -->
+    <script src="./js/quest.js"></script>
+    <script src="./js/achievement.js"></script>
+    <script src="./js/challenge.js"></script>
+    <script src="./js/ui.js"></script>
+
+    <!-- Main Game Engine (must load last) -->
+    <script src="./js/game.js"></script>
+  <script>
+      window.addEventListener("keydown", function(e) {
+          if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+              e.preventDefault();
+          }
+      }, false);
+    </script>
+  </head>
+  <body>
+    <div id="game-container"></div>
+  </body>
+</html>

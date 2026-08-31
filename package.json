@@ -1,0 +1,25 @@
+{
+  "name": "slifer-jump",
+  "version": "2.0.0",
+  "description": "SliferJump 2.0: Rise of Slifer - 2D Vertical Platformer Engine with Dynamic Physics, Custom Sound Synthesis, and Procedural Level Progression",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -p 5000 .",
+    "dev": "serve -p 5000 .",
+    "test": "node -c js/config.js js/storage.js js/sound-manager.js js/particles.js js/slifer.js js/platform.js js/orichalcos.js js/meteor.js js/lava.js js/monster.js js/collectible.js js/background.js js/quest.js js/achievement.js js/challenge.js js/ui.js js/game.js"
+  },
+  "keywords": [
+    "game",
+    "platformer",
+    "p5js",
+    "javascript",
+    "canvas",
+    "web-audio-api",
+    "procedural-generation"
+  ],
+  "author": "SliferSoft",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
