@@ -48,49 +48,106 @@ class UI {
         UI.menuOverlay.innerHTML = `
             <div class="menu-container">
                 <div class="menu-logo-area">
-                    <img src="./assets/img/logo.png" alt="SliferJump" class="menu-logo" />
+                    <div class="menu-logo-badge">
+                        <img src="./assets/img/logo.png" alt="SliferJump" class="menu-logo" />
+                    </div>
                     <h1 class="menu-title">SLIFER<span class="title-accent">JUMP</span></h1>
-                    <p class="menu-subtitle">Rise of Slifer</p>
+                    <p class="menu-subtitle" lang="en">RISE OF SLIFER</p>
                 </div>
 
-                <div class="menu-profile" id="menu-profile">
-                    <div class="profile-avatar">🐉</div>
-                    <div class="profile-info">
-                        <span class="profile-name" id="profile-name">Düellocu</span>
-                        <span class="profile-score" id="profile-high-score">En Yüksek: 0</span>
+                <div class="menu-profile" id="menu-profile" title="İsmi değiştirmek için tıkla">
+                    <div class="profile-left">
+                        <div class="profile-tag-row">
+                            <span class="profile-badge">DÜELLOCU</span>
+                            <span class="profile-pulse-dot" title="Çevrimiçi"></span>
+                        </div>
+                        <div class="profile-user-row">
+                            <span class="profile-name" id="profile-name">Düellocu</span>
+                            <button class="profile-edit-btn" id="btn-edit-username" title="İsmi Değiştir">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="profile-divider"></div>
+                    <div class="profile-right">
+                        <div class="profile-score-heading">
+                            <svg class="profile-trophy-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                <path d="M4 22h16"></path>
+                                <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
+                                <path d="M6 4h12a2 2 0 0 1 2 2v4a6 6 0 0 1-12 0V6a2 2 0 0 1 2-2z"></path>
+                            </svg>
+                            <span class="profile-score-label">EN YÜKSEK</span>
+                        </div>
+                        <span class="profile-score" id="profile-high-score">0</span>
                     </div>
                 </div>
 
                 ${UI.challengeData ? `
                 <div class="challenge-banner">
-                    <span class="challenge-icon">⚔️</span>
+                    <span class="challenge-icon-svg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="14.5" y1="17.5" x2="3" y2="6"></line>
+                            <polyline points="3 3 6 3 17.5 14.5"></polyline>
+                            <line x1="13" y1="19" x2="19" y2="13"></line>
+                            <line x1="16" y1="16" x2="20" y2="20"></line>
+                            <line x1="19" y1="21" x2="21" y2="19"></line>
+                        </svg>
+                    </span>
                     <span class="challenge-text"><strong>${UI.challengeData.challenger}</strong> sana meydan okuyor!<br>Hedef Skor: <strong>${UI.challengeData.score.toLocaleString()}</strong></span>
                 </div>` : ""}
 
                 <div class="menu-buttons">
                     <button class="menu-btn btn-play" id="btn-play">
-                        <span class="btn-icon">⚡</span>
+                        <svg class="btn-svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
                         <span class="btn-text">BÖLÜM SEÇ</span>
                     </button>
                     <button class="menu-btn btn-secondary" id="btn-quests">
-                        <span class="btn-icon">📜</span>
+                        <svg class="btn-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
                         <span class="btn-text">GÖREVLER</span>
                     </button>
                     <button class="menu-btn btn-secondary" id="btn-achievements">
-                        <span class="btn-icon">🏆</span>
+                        <svg class="btn-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
+                            <path d="M6 4h12a2 2 0 0 1 2 2v4a6 6 0 0 1-12 0V6a2 2 0 0 1 2-2z"></path>
+                        </svg>
                         <span class="btn-text">BAŞARIMLAR</span>
                     </button>
                     <button class="menu-btn btn-secondary" id="btn-guide">
-                        <span class="btn-icon">📖</span>
+                        <svg class="btn-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
                         <span class="btn-text">REHBER</span>
                     </button>
                     <button class="menu-btn btn-secondary" id="btn-settings">
-                        <span class="btn-icon">⚙️</span>
+                        <svg class="btn-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
                         <span class="btn-text">AYARLAR</span>
                     </button>
                 </div>
 
-                <p class="menu-footer">Created by SliferSoft © | slifersoft.com</p>
+                <div class="menu-footer-brand">
+                    <img src="./assets/img/slifersoft_logo.png" alt="SliferSoft" class="footer-slifersoft-logo" />
+                    <p class="footer-brand-text">Created by <strong>SliferSoft</strong> © | slifersoft.com</p>
+                </div>
             </div>
         `;
         document.getElementById("game-container").appendChild(UI.menuOverlay);
@@ -121,6 +178,21 @@ class UI {
             SoundManager.synthButtonClick();
             UI.showSettings();
         });
+        const editBtn = document.getElementById("btn-edit-username");
+        if (editBtn) {
+            editBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                SoundManager.synthButtonClick();
+                UI.showUsernamePrompt(true);
+            });
+        }
+        const profileBox = document.getElementById("menu-profile");
+        if (profileBox) {
+            profileBox.addEventListener("click", () => {
+                SoundManager.synthButtonClick();
+                UI.showUsernamePrompt(true);
+            });
+        }
     }
     static createLevelSelectOverlay() {
         UI.levelSelectOverlay = document.createElement("div");
@@ -242,7 +314,7 @@ class UI {
         const profileName = document.getElementById("profile-name");
         const profileScore = document.getElementById("profile-high-score");
         if (profileName) profileName.textContent = GameStorage.getUsername() || "Düellocu";
-        if (profileScore) profileScore.textContent = "En Yüksek: " + (GameStorage.getHighScore() || 0).toLocaleString();
+        if (profileScore) profileScore.textContent = (GameStorage.getHighScore() || 0).toLocaleString();
     }
 
 
@@ -476,8 +548,16 @@ class UI {
         const overlay = document.createElement("div");
         overlay.id = "username-overlay";
         overlay.innerHTML = `
-            <div class="menu-container username-panel" style="width: 80%; padding: 30px;">
-                <h2 class="menu-title" style="font-size: 26px; text-align: center; margin-bottom: 20px;">${isSettings ? "⚙️ Ayarlar" : "🐉 Hoş Geldin Düellocu!"}</h2>
+            <div class="username-panel">
+                <div class="modal-title-row">
+                    ${isSettings ? `
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <h2 class="menu-title" style="font-size: 22px; margin: 0;">AYARLAR</h2>` : `
+                    <h2 class="menu-title" style="font-size: 21px; margin: 0;">HOŞ GELDİN DÜELLOCU!</h2>`}
+                </div>
                 <div class="setting-group">
                     <label>Kullanıcı Adı</label>
                     <input type="text" id="username-input" placeholder="İsmini gir..." maxlength="20"
@@ -486,27 +566,48 @@ class UI {
                 <div class="setting-group">
                     <label>Ses</label>
                     <button class="menu-btn btn-secondary" id="btn-toggle-sound">
-                        ${SoundManager.isMuted() ? "🔇 Ses Kapalı" : "🔊 Ses Açık"}
+                        ${SoundManager.isMuted() ? "Ses Kapalı" : "Ses Açık"}
                     </button>
                 </div>
-                <div class="setting-group" style="margin-top: 15px; display: flex; align-items: center; justify-content: space-between;">
-                    <label style="margin: 0; font-size: 14px;">Alternatif Menü Müziği</label>
+                <div class="setting-group" style="display: flex; align-items: center; justify-content: space-between;">
+                    <label style="margin: 0; font-size: 13px;">Alternatif Menü Müziği</label>
                     <label class="switch">
                         <input type="checkbox" id="alt-music-checkbox" ${(GameStorage.getProfile().settings || {}).altMusic ? "checked" : ""} />
                         <span class="slider round"></span>
                     </label>
                 </div>
-                <button class="menu-btn btn-play" id="btn-save-settings">
-                    <span class="btn-text">💾 KAYDET</span>
-                </button>
+                <div class="modal-btn-row" style="display: flex; gap: 10px; width: 100%; margin-top: 4px;">
+                    ${isSettings ? `<button class="menu-btn btn-secondary" id="btn-close-settings" style="flex: 1;">İPTAL</button>` : ""}
+                    <button class="menu-btn btn-play" id="btn-save-settings" style="flex: 1.4;">
+                        <svg class="btn-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span class="btn-text">KAYDET</span>
+                    </button>
+                </div>
             </div>
         `;
         document.getElementById("game-container").appendChild(overlay);
 
         document.getElementById("btn-toggle-sound").addEventListener("click", () => {
             SoundManager.toggleMute();
-            document.getElementById("btn-toggle-sound").textContent = SoundManager.isMuted() ? "🔇 Ses Kapalı" : "🔊 Ses Açık";
+            document.getElementById("btn-toggle-sound").textContent = SoundManager.isMuted() ? "Ses Kapalı" : "Ses Açık";
         });
+
+        if (isSettings) {
+            const closeBtn = document.getElementById("btn-close-settings");
+            if (closeBtn) {
+                closeBtn.addEventListener("click", () => {
+                    SoundManager.synthButtonClick();
+                    overlay.remove();
+                });
+            }
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) {
+                    overlay.remove();
+                }
+            });
+        }
 
         document.getElementById("btn-save-settings").addEventListener("click", () => {
             const name = document.getElementById("username-input").value.trim();
