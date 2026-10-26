@@ -1,4 +1,20 @@
-# SliferJump 2.0: Rise of Slifer
+<p align="center">
+  <img src="./assets/img/logo.png" alt="SliferJump Oyun İkonu" width="140" />
+</p>
+
+<h1 align="center">SliferJump 2.0: Rise of Slifer</h1>
+
+<p align="center">
+  <strong>Gökyüzü Ejderhası Slifer Temalı Epik 2D Dikey Platform Oyunu</strong>
+</p>
+
+<p align="center">
+  <a href="https://ersinsandal.github.io/SliferJump/"><img src="https://img.shields.io/badge/Hemen%20Oyna-Canlı%20Demo-red?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Hemen Oyna" /></a>
+  <img src="https://img.shields.io/badge/PWA-Uyumlu-gold?style=for-the-badge" alt="PWA Uyumlu" />
+  <img src="https://img.shields.io/badge/60%20FPS-Retina-blueviolet?style=for-the-badge" alt="60 FPS" />
+</p>
+
+---
 
 Modern web standartları ve saf JavaScript (Vanilla JS / HTML5 Canvas) mimarisi üzerine inşa edilmiş, deterministik fizik motoruna, dinamik görünüm kaydırma (viewport scrolling) sistemine, akıllı prosedürel platform üretim algoritmalarına ve gerçek zamanlı Web Audio API ses sentezleyicisine sahip yüksek performanslı 2D dikey platform oyun motoru.
 

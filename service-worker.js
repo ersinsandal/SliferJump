@@ -2,7 +2,7 @@
  * SliferJump 2.0 Service Worker
  * Enables offline play and PWA installation
  */
-const CACHE_NAME = "sliferjump-v2";
+const CACHE_NAME = "sliferjump-v2.4";
 const ASSETS_TO_CACHE = [
     "./",
     "./index.html",
@@ -32,6 +32,10 @@ const ASSETS_TO_CACHE = [
     "./assets/img/hole.png",
     "./assets/img/background.png",
     "./assets/img/logo.png",
+    "./assets/img/logo_192.png",
+    "./assets/img/favicon-32x32.png",
+    "./assets/img/favicon-16x16.png",
+    "./favicon.ico",
     "./assets/sound/blackhole.mp3",
     "./assets/sound/falling.mp3",
     "./assets/sound/fragile.mp3",

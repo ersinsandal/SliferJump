@@ -1,4 +1,20 @@
-# SliferJump 2.0: Rise of Slifer
+<p align="center">
+  <img src="./assets/img/logo.png" alt="SliferJump Game Icon" width="140" />
+</p>
+
+<h1 align="center">SliferJump 2.0: Rise of Slifer</h1>
+
+<p align="center">
+  <strong>Epic 2D Vertical Platformer Engine featuring Slifer the Sky Dragon</strong>
+</p>
+
+<p align="center">
+  <a href="https://ersinsandal.github.io/SliferJump/"><img src="https://img.shields.io/badge/Play%20Now-Live%20Demo-red?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Play Now" /></a>
+  <img src="https://img.shields.io/badge/PWA-Ready-gold?style=for-the-badge" alt="PWA Ready" />
+  <img src="https://img.shields.io/badge/60%20FPS-Retina-blueviolet?style=for-the-badge" alt="60 FPS" />
+</p>
+
+---
 
 A modern, high-performance 2D vertical platformer engine engineered in Vanilla JavaScript and HTML5 Canvas (leveraging p5.js and Web Audio API). The project implements deterministic physics, dynamic viewport scrolling, intelligent procedural generation, multi-tier hazard simulation, and real-time audio synthesis without reliance on heavyweight game frameworks.
 
