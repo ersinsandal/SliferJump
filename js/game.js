@@ -90,7 +90,7 @@ function ensureLevelBackgroundLoaded(levelId) {
 function preload() {
     const basePath = ".";
     
-    // Load level 1 immediately so initial game start is instantaneous (<0.5s)
+    // Load level 1 immediately so initial game start is instantaneous (<0.1s)
     loadedBgImages[1] = loadImage(basePath + "/assets/img/bg_level_1.png", () => {}, () => {
         loadedBgImages[1] = loadImage(basePath + "/assets/img/bg_realm_1.jpg");
     });
@@ -100,17 +100,6 @@ function preload() {
     Slifer.rightImage = loadImage(basePath + "/assets/img/slifer_right.png");
     Platform.springImage = loadImage(basePath + "/assets/img/spring.png");
     Orichalcos.sealImage = loadImage(basePath + "/assets/img/hole.png");
-
-    soundFormats("mp3", "wav", "ogg");
-    sound.explosion = loadSound(basePath + "/assets/sound/explosion.mp3");
-    sound.break = loadSound(basePath + "/assets/sound/break.mp3");
-    sound.roar = loadSound(basePath + "/assets/sound/roar.mp3");
-    sound.lava = loadSound(basePath + "/assets/sound/lava.mp3");
-    sound.blackhole = loadSound(basePath + "/assets/sound/blackhole.mp3");
-    sound.jump = loadSound(basePath + "/assets/sound/jump.wav");
-    sound.spring = loadSound(basePath + "/assets/sound/spring.mp3");
-    sound.fragile = loadSound(basePath + "/assets/sound/fragile.mp3");
-    sound.falling = loadSound(basePath + "/assets/sound/falling.mp3");
 }
 
 /**
@@ -141,6 +130,18 @@ function setup() {
     questSystem = new QuestSystem();
     achievementSystem = new AchievementSystem();
     dynamicBackground = new DynamicBackground();
+
+    // Asynchronously load sound effects in background without stalling initial canvas/menu render
+    soundFormats("mp3", "wav", "ogg");
+    sound.explosion = loadSound("./assets/sound/explosion.mp3");
+    sound.break = loadSound("./assets/sound/break.mp3");
+    sound.roar = loadSound("./assets/sound/roar.mp3");
+    sound.lava = loadSound("./assets/sound/lava.mp3");
+    sound.blackhole = loadSound("./assets/sound/blackhole.mp3");
+    sound.jump = loadSound("./assets/sound/jump.wav");
+    sound.spring = loadSound("./assets/sound/spring.mp3");
+    sound.fragile = loadSound("./assets/sound/fragile.mp3");
+    sound.falling = loadSound("./assets/sound/falling.mp3");
 
     // Assign sounds to SoundManager
     SoundManager.sounds = sound;
